@@ -1027,4 +1027,17 @@ def getTableDef(tableName, tables):
         if table['name'] == tableName:
             return table
 
-### END ###
+###
+#
+#    AUTHOR
+#
+#    Grant Street Group <developers@grantstreet.com>
+#
+#    COPYRIGHT AND LICENSE
+#
+#    This software is Copyright (c) 2021 by Grant Street Group.
+#
+#    This is free software, licensed under:
+#        MIT License
+#
+###
