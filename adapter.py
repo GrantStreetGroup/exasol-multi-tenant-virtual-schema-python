@@ -847,7 +847,10 @@ def getColumnDataType(req, tables):
             'ADD_YEARS', 'CASE', 'LOWER', 'LTRIM', 'REVERSE', 'RTRIM', 'SUBSTR', 'TRANSLATE',
             'TRIM', 'TRUNC', 'UPPER'
         ):
-            dt = getColumnDataType(req['arguments'], tables)
+            if 'results' in req:
+                dt = getColumnDataType(req['results'], tables)
+            else:
+                dt = getColumnDataType(req['arguments'], tables)
 
         # Intervals just returned strings for now: TODO handle better
         elif funcName in (
