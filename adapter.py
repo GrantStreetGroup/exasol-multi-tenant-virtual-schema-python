@@ -471,7 +471,8 @@ def buildSQLNode(req, delim=','):
             sql.append('ORDER BY')
             sql += buildSQLNode(req.pop('orderBy'))
         if 'separator' in req:
-            sql.append(" SEPARATOR '%s'" % req.pop('separator'))
+            sql.append('SEPARATOR')
+            sql += buildSQLNode(req.pop('separator'))
         sql.append(')')
 
     elif Type == 'function_aggregate_listagg':
@@ -497,32 +498,28 @@ def buildSQLNode(req, delim=','):
             sql.append(')')
 
     elif Type == 'function_scalar':
-        req.pop('numArgs','')
-        req.pop('variableInputArgs','')
-        if req.pop('infix',''):
-            infix = req.pop('name')
-            args  = req.pop('arguments')
-            operator = {
-                'ADD':  '+',
-                'SUB':  '-',
-                'MULT': '*',
-                'FLOAT_DIV': '/'
-            }[infix]
-            if operator == '':
-                raise ValueError('Unknown infix type '+infix)
+        funcName = req.pop('name')
+        args     = req.pop('arguments')
+        operators = {
+            'ADD':  '+',
+            'SUB':  '-',
+            'MULT': '*',
+            'FLOAT_DIV': '/'
+        }
+
+        if funcName in operators:
             if len(args) != 2:
-                raise ValueError('Incorrect infix arg num:',args)
+                raise ValueError('Incorrect operator arg num:',args)
             sql.append('(')
             sql += buildSQLNode(args[0])
-            sql.append(operator)
+            sql.append(operators[funcName])
             sql += buildSQLNode(args[1])
             sql.append(')')
         else:
-            funcName = req.pop('name')
             if funcName == 'NEG':
                 funcName = '-'
             sql.append(funcName+'(')
-            sql += buildSQLNode(req.pop('arguments'))
+            sql += buildSQLNode(args)
             sql.append(')')
 
     elif Type == 'function_scalar_case':
